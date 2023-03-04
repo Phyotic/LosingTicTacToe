@@ -6,7 +6,6 @@ import java.util.Arrays;
 public class TicTacToeBoard {
     private String[][] board;
     private ArrayList<Integer> available;
-    private boolean finished = false;
 
     TicTacToeBoard() {
         board = new String[3][3];
@@ -21,10 +20,6 @@ public class TicTacToeBoard {
                 id++;
             }
         }
-    }
-
-    public boolean isFinished() {
-        return finished;
     }
 
     public void display() {
@@ -45,7 +40,16 @@ public class TicTacToeBoard {
         System.out.printf("%n%n");
     }
 
-    public void choose(int choice) {
+    public boolean choose(Player player, int pos) {
+        if(available.contains(pos)) {
+            available.remove(pos);
+            int col = pos / 3;
+            int row = pos % 3 - 1;
 
+            board[col][row] = player.mark();
+            return true;
+        } else {
+            return false;
+        }
     }
 }
