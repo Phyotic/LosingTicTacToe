@@ -5,9 +5,14 @@ import java.util.Random;
 
 public class Player {
     String piece;
+    boolean winner = false;
 
     Player(String piece) {
         this.piece = piece;
+    }
+
+    public String getPiece() {
+        return piece;
     }
 
     public String mark() {
@@ -20,5 +25,13 @@ public class Player {
         int position = available.get(randomIndex);
         System.out.println("Bot chose position: " + position);
         return position;
+    }
+
+    public void setWinner(boolean won) {
+        this.winner = won;
+    }
+
+    public boolean getWinner() {
+        return this.winner;
     }
 }

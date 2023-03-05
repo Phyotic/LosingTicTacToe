@@ -24,9 +24,6 @@ public class TicTacToeBoard {
     }
 
     public ArrayList<Integer> getAvailable() {
-        for(int num : available) {
-            System.out.println("Numbers in available: " + num);
-        }
         return this.available;
     }
 
@@ -64,11 +61,78 @@ public class TicTacToeBoard {
             row = (pos - (pos % 3)) / 3;
         }
         board[col][row] = player.mark();
+        checkWon(col, row, player);
+    }
+
+    public void setWon(boolean status) {
+        this.won = status;
     }
 
     public boolean isWon() {
-        //TODO: check for win condition
-        //TODO: end game when no more moves
         return won;
+    }
+
+    public void checkWon(int col, int row, Player player) {
+        int columns = 0;
+        for(int c = 0; c < 3; c++) {
+            if(board[c][row].equals(player.getPiece())) {
+                columns++;
+            }
+        }
+
+        int rows = 0;
+        for(int r = 0; r < 3; r++) {
+            if(board[col][r].equals(player.getPiece())) {
+                rows++;
+            }
+        }
+
+        int declineDiagonal = 0;
+        int curCol = col, curRow = row;
+        while(curCol >= 0 && curRow >= 0) {
+            if(board[curCol][curRow].equals(player.getPiece())) {
+                declineDiagonal++;
+            }
+            curCol--;
+            curRow--;
+        }
+
+        curCol = col + 1;
+        curRow = row + 1;
+        while(curCol < 3 && curRow < 3) {
+            if(board[curCol][curRow].equals(player.getPiece())) {
+                declineDiagonal++;
+            }
+            curRow++;
+            curCol++;
+        }
+        
+        int inclineDiagonal = 0;
+        curCol = col;
+        curRow = row;
+        while(curCol < 3 && curRow >= 0) {
+            if(board[curCol][curRow].equals(player.getPiece())) {
+                inclineDiagonal++;
+            }
+            curCol++;
+            curRow--;
+        }
+
+        curCol = col - 1;
+        curRow = row + 1;
+        while(curCol >= 0 && curRow < 3) {
+            if(board[curCol][curRow].equals(player.getPiece())) {
+                inclineDiagonal++;
+            }
+            curCol--;
+            curRow++;
+        }
+
+        if(rows == 3 || columns == 3 || declineDiagonal == 3 || inclineDiagonal == 3) {
+            this.setWon(true);
+            player.setWinner(true);
+        } else {
+            this.setWon(false);
+        }
     }
 }
