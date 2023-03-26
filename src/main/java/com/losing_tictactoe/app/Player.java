@@ -1,9 +1,8 @@
 package com.losing_tictactoe.app;
 
 import java.util.ArrayList;
-import java.util.Random;
 
-public class Player {
+public abstract class Player {
     String piece;
     String name;
     boolean winner = false;
@@ -21,14 +20,6 @@ public class Player {
         return this.name;
     }
 
-    public int randomPos(ArrayList<Integer> available) {
-        Random rng = new Random();
-        int randomIndex = rng.nextInt(available.size());
-        int position = available.get(randomIndex);
-        System.out.println("Bot chose position: " + position);
-        return position;
-    }
-
     public void setWinner(boolean won) {
         this.winner = won;
     }
@@ -37,7 +28,5 @@ public class Player {
         return winner;
     }
 
-    public boolean getWinner() {
-        return this.winner;
-    }
+    public abstract int pickPosition(ArrayList<Integer> available);
 }

@@ -1,5 +1,6 @@
 package com.losing_tictactoe.app;
 
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class LosingTicTacToeDriver {
@@ -10,13 +11,13 @@ public class LosingTicTacToeDriver {
 
         Scanner in = new Scanner(System.in);
         int userChoice = 0;
-        Player user = new Player("Player", "X");
-        Player bot = new Player("Bot", "O");
+        Player user = new Human("Player", "X");
+        Player bot = new RandomBot("Bot", "O");
         scoreboard.addPlayer(user.getName());
         scoreboard.addPlayer(bot.getName());
 
         System.out.println("You are: " + user.getPiece());
-        System.out.println("Bot is : " + bot.getPiece());
+        System.out.println(bot.getName() + " is : " + bot.getPiece());
         boolean playerTurn = true;
 
         boolean playAgain = true;
@@ -35,12 +36,13 @@ public class LosingTicTacToeDriver {
                         break;
                     }
 
-                    board.choose(user, userChoice);
+                    ArrayList<Integer> choice = new ArrayList<>();
+                    choice.add(userChoice);
+                    board.choose(user, user.pickPosition(choice));
                     playerTurn = false;
                 } else {
-                    board.choose(bot, bot.randomPos(board.getAvailable()));
+                    board.choose(bot, bot.pickPosition(board.getAvailable()));
                     playerTurn = true;
-
                 }
                 board.display();
             }
