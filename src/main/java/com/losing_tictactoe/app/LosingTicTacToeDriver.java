@@ -51,14 +51,16 @@ public class LosingTicTacToeDriver {
                 if(user.isWinner()) {
                     System.out.println("You won!");
                     user.setWinner(false);
-                } else if(userChoice != 0) {
+                } else if(bot.isWinner()) {
                     System.out.println("Bot won!");
                     bot.setWinner(false);
+                } else if(userChoice != 0) {
+                    System.out.println("It's a draw!");
                 }
                 scoreboard.displayScore();
 
                 System.out.print("Play again? (Y/N): ");
-                String answer = in.nextLine();
+                String answer = in.nextLine().toLowerCase();
                 if(answer.equals("y")) {
                     playAgain = true;
                     board.reset();
