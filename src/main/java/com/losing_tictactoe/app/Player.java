@@ -5,18 +5,20 @@ import java.util.Random;
 
 public class Player {
     String piece;
+    String name;
     boolean winner = false;
 
-    Player(String piece) {
+    Player(String name, String piece) {
         this.piece = piece;
+        this.name = name;
     }
 
     public String getPiece() {
         return piece;
     }
 
-    public String mark() {
-        return piece;
+    public String getName() {
+        return this.name;
     }
 
     public int randomPos(ArrayList<Integer> available) {
@@ -29,6 +31,10 @@ public class Player {
 
     public void setWinner(boolean won) {
         this.winner = won;
+    }
+
+    public boolean isWinner() {
+        return winner;
     }
 
     public boolean getWinner() {
