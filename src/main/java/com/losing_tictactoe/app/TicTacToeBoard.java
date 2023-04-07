@@ -3,15 +3,21 @@ package com.losing_tictactoe.app;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class TicTacToeBoard {
+public class TicTacToeBoard implements Observable {
     private String[][] board;
     private ArrayList<Integer> available;
     private boolean won = false;
     private Scoreboard scoreboard;
+    private ArrayList<Player> players;
+    private boolean changed = false;
+    private Player winner;
 
-    TicTacToeBoard() {
+    TicTacToeBoard(ArrayList<Player> players, Scoreboard sb) {
         board = new String[3][3];
-        scoreboard = null;
+        scoreboard = sb;
+        this.players = players;
+        winner = null;
+
         available = new ArrayList<Integer>(
             Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9)
             );
@@ -47,13 +53,16 @@ public class TicTacToeBoard {
         System.out.printf("%n%n");
     }
 
-    public boolean valid(int pos) {
+    public boolean validMove(int pos) {
         return available.contains(pos);
     }
 
     public void choose(Player player, int pos) {
         int indexOf = available.indexOf(pos);
         available.remove(indexOf);
+        setChanged(true);
+        notfifyObservers(pos);
+
         int col = (pos - 1) % 3;
         int row;
         
@@ -136,18 +145,23 @@ public class TicTacToeBoard {
         if(rows == 3 || columns == 3 || declineDiagonal == 3 || inclineDiagonal == 3) {
             this.setWon(true);
             player.setWinner(true);
+            winner = player;
             return true;
         } else {
-            this.setWon(false);
+            //this.setWon(false);
             return false;
         }
     }
 
-    public void addScoreboard(Scoreboard sb) {
-        scoreboard = sb;
-    }
-
     public void reset() {
+        for(int i = 0, size = players.size(); i < size; i++) {
+            players.get(i).newGame(winner);
+        }
+        
+        if(winner != null) {
+            winner.setWinner(false);
+            winner = null;
+        }
         this.setWon(false);
 
         int id = 1;
@@ -162,4 +176,39 @@ public class TicTacToeBoard {
             Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9)
             );
     }
+
+    public ArrayList<Player> getPlayers() {
+        return this.players;
+    }
+
+    public void addPlayer(Player player) {
+        this.getPlayers().add(player);
+    }
+
+    @Override
+    public void addObserver(Object o) {
+        players.add((Player) o);
+    }
+
+    @Override
+    public void deleteObserver(Object o) {
+        players.remove((Player) o);
+    }
+
+    @Override
+    public void notfifyObservers(Object o) {
+        if(changed) {
+            for(int i = 0, size = players.size(); i < size; i++) {
+                players.get(i).update((int) o);
+            }
+            changed = false;
+        }
+    }
+
+    @Override
+    public void setChanged(boolean state) {
+        changed = true;
+    }
+
+    
 }
