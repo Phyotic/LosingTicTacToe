@@ -1,21 +1,41 @@
 package com.losing_tictactoe.app;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.Queue;
 import java.util.Scanner;
 
 public class LosingTicTacToeDriver {
     public static void main(String[] args) {
-        TicTacToeBoard board = new TicTacToeBoard();
+        Player user = new Human("Player", "X");
+        ArrayList<Player> players = new ArrayList<>();
+        players.add(user);
+
         Scoreboard scoreboard = new Scoreboard();
-        board.addScoreboard(scoreboard);
+        TicTacToeBoard board = new TicTacToeBoard(players, scoreboard);
 
         Scanner in = new Scanner(System.in);
         int userChoice = 0;
-        Player user = new Human("Player", "X");
-        Player bot = new RandomBot("Bot", "O");
+
+        System.out.println("Choose an opponent:");
+        System.out.printf("%s: %d", "RandomBot", 1);
+        System.out.printf("%n%s: %d%n", "LearningBot", 2);
+        userChoice = in.nextInt();
+
+        Player bot;
+        if(userChoice == 2) {
+            LearningTree lt = new LearningTree(board.getAvailable());
+            Queue<Integer> q = new LinkedList<Integer>();
+            bot = new LearningBot("LearningBot", "O", lt, false, q);
+        } else {
+            bot = new RandomBot("RandomBot", "O");
+        }
+        board.addPlayer(bot);
+
         scoreboard.addPlayer(user.getName());
         scoreboard.addPlayer(bot.getName());
 
+        userChoice = 0;  
         System.out.println("You are: " + user.getPiece());
         System.out.println(bot.getName() + " is : " + bot.getPiece());
         boolean playerTurn = true;
@@ -29,7 +49,7 @@ public class LosingTicTacToeDriver {
                         System.out.print("Choose a position, 0 to quit: ");
                         userChoice = in.nextInt();
                         in.nextLine();
-                    } while(!board.valid(userChoice) && userChoice != 0);
+                    } while(!board.validMove(userChoice) && userChoice != 0);
 
                     if(userChoice == 0) {
                         playAgain = false;
@@ -50,10 +70,8 @@ public class LosingTicTacToeDriver {
             if(playAgain) {
                 if(user.isWinner()) {
                     System.out.println("You won!");
-                    user.setWinner(false);
                 } else if(bot.isWinner()) {
                     System.out.println("Bot won!");
-                    bot.setWinner(false);
                 } else if(userChoice != 0) {
                     System.out.println("It's a draw!");
                 }
